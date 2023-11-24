@@ -1,0 +1,50 @@
+#!/usr/bin/python3
+
+import pexpect
+import time
+import os
+import sys
+
+def pair_client(mac):
+    address = mac
+    print ("Starting bluetoothctl")
+    child = pexpect.spawn('bluetoothctl')
+    child.timeout = 60
+    child.expect('#')
+
+    print ("Removeing device")
+
+    child.sendline('remove %s\r' % address)
+    child.expect('#')
+
+    print ("Start scan")
+    child.sendline('scan on\r')
+
+    print("Waiting for device to appear in scan")
+    child.expect("Discovery started")
+    child.expect(address)
+
+    print("Found device")
+    child.sendline('trust %s\r' % address)
+    child.expect('#')
+    time.sleep(2)
+
+    child.sendline('pair %s\r' % address)
+    print ("Pair request sent")
+    i = child.expect (["passkey", "Pairing successful"])
+    if i == 0:
+        print ("Approving device")
+        child.sendline('%s\r' % 'yes')
+        print("Device approved")
+        child.expect("Pairing successful")
+    else:
+        print ("No approval required")
+
+    child.sendline('quit\r')
+    child.expect(pexpect.EOF)
+
+if len(sys.argv) <2:
+    print ("Specify address")
+    sys.exit(-1)
+
+pair_client(sys.argv[1].upper())
