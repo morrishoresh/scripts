@@ -14,33 +14,33 @@ def pair_client(mac):
 
     print ("Removeing device")
 
-    child.sendline('remove %s\r' % address)
+    child.sendline('remove %s' % address)
     child.expect('#')
 
     print ("Start scan")
-    child.sendline('scan on\r')
+    child.sendline('scan on')
 
     print("Waiting for device to appear in scan")
     child.expect("Discovery started")
     child.expect(address)
 
     print("Found device")
-    child.sendline('trust %s\r' % address)
+    child.sendline('trust %s' % address)
     child.expect('#')
     time.sleep(2)
 
-    child.sendline('pair %s\r' % address)
+    child.sendline('pair %s' % address)
     print ("Pair request sent")
     i = child.expect (["passkey", "Pairing successful"])
     if i == 0:
         print ("Approving device")
-        child.sendline('%s\r' % 'yes')
+        child.sendline('%s' % 'yes')
         print("Device approved")
         child.expect("Pairing successful")
     else:
         print ("No approval required")
 
-    child.sendline('quit\r')
+    child.sendline('quit')
     child.expect(pexpect.EOF)
 
 if len(sys.argv) <2:
