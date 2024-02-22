@@ -24,4 +24,6 @@ else
 	ROUTER=$(ifconfig en0 | grep -w inet | awk '{print $2}')
 	route -n delete $INT_NET
 	route -n add $INT_NET $ROUTER
+	route delete default
+	route add default 172.20.123.24
 fi
