@@ -10,10 +10,10 @@ do
 		now_epoch=$(date "+%s")
 		diff=$(( now_epoch - ts_epoch ))
 		if [ "$diff" -lt 20 ]; then
-			sleep 20
 			/opt/homebrew/bin/SwitchAudioSource -t input -s "USB audio CODEC"
 			/usr/bin/osascript -e "set volume input volume 100"
 			/opt/homebrew/bin/SwitchAudioSource -t output -s "DELL U2719D"
+			sleep 20
 		fi
 	fi
 
